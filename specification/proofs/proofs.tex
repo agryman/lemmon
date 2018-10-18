@@ -1,0 +1,94 @@
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../shared/preamble}
+\addbibresource{../shared/references.bib}
+
+\usepackage{proofs}
+
+\title{Proofs}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article is a Z Notation specification for proofs and proof checking.
+It has been type checked by \fuzz.
+The definitions that appear here are taken from Lemmon's book, {\it Beginning Logic}.
+The purpose of this specification is to guide the development of a proof checker
+aimed at Z specifications
+\end{abstract}
+
+\section{Introduction}
+
+For a long time I have thought that it would be extremely useful to be able to write formal proofs
+concerning the mathematical objects defined in Z specifications.
+There are some very mature proof assistants available.
+I know something about Coq, but unfortunately it's style of proof is very different that that one finds in mathematical
+papers.
+A Coq proof consists of a list of tactics that represent higher level aggregates of deductions.
+This makes sense for a proof assistant since its job is to help the user discover proofs.
+
+While a proof assistant might make sense is some contexts, proper development of a mathematical paper
+consists of a gradual introduction of concepts and lemmas leading to the main results.
+The proofs should, in some sense, write themselves.
+The focus of a mathematical paper should be on explanation and clarity.
+The proofs should be easy to read.
+I'd therefore really like something that would let me write and check natural looking proofs.
+
+In contrast to Coq, the style of proof presented by Lemmon is very clear and explicit.
+However, the task of checking such a proof could easily be delegated to a program,
+much the same way that \fuzz\ type checks Z.
+
+I believe that the kernel of a proof checker could be very small.
+It is basically an engine driven by a set of deduction rules.
+The engine simply needs to check that each deduction rule gets applied correctly.
+Even if it turns out that writing such an engine is too much work, the exercise of developing
+at least a simple version should give me a greater appreciation of tools like Coq and enable me to
+use them more productively.
+
+My plan of attack is to formalize the concept of proof as described by Lemmon, starting with
+the Propositional Calculus.
+
+\section{Propositional Variables}
+
+The Propositional Calculus focuses on the form of statements and arguments, without being concerned about the subject matter
+described by those statements.
+This feat of abstraction is accomplished by using {\it propositional variables} that stand for arbitrary statements.
+The only real restriction here is that these statements must be either {\it true} or {\it false} in some given context.
+
+\subsection{\zcmd{propP}, \zcmd{propQ}, \zcmd{propR}, \zcmd{propS}, and \zcmd{propT}}
+
+Traditionally, these statements are represented by the letters $\propP$, $\propQ$, $\propR$, $\propS$, and $\propT$.
+
+\subsection{\zcmd{propPrime}}
+
+If more statements need to be represented then the letters are decorated with one or more primes, 
+e.g. $\propP \propPrime$, $\propQ \propPrime \propPrime$, etc.
+
+\subsection{$PropVar$}
+
+Let $PropVar$ denote the set of propositional variables.
+
+\begin{zed}
+	PropVar ::= \propP | \propQ | \propR | \propS | \propT | (\_ \propPrime) \ldata PropVar \rdata
+\end{zed}
+
+\begin{example}
+$\propP \propPrime$, $\propQ \propPrime \propPrime$, and $\propR$ are propositional variables.
+
+\begin{zed}
+	\propP \propPrime \in PropVar
+\also
+	\propQ \propPrime \propPrime \in PropVar
+\also
+	\propR \in PropVar
+\end{zed}
+
+\end{example}
+
+\printbibliography
+
+\end{document}
