@@ -50,44 +50,246 @@ at least a simple version should give me a greater appreciation of tools like Co
 use them more productively.
 
 My plan of attack is to formalize the concept of proof as described by Lemmon, starting with
-the Propositional Calculus.
+the propositional calculus.
 
-\section{Propositional Variables}
+\section{Propositions}
 
-The Propositional Calculus focuses on the form of statements and arguments, without being concerned about the subject matter
-described by those statements.
-This feat of abstraction is accomplished by using {\it propositional variables} that stand for arbitrary statements.
-The only real restriction here is that these statements must be either {\it true} or {\it false} in some given context.
+The {\it propositional calculus} defines a set of formal {\it statements} or {\it propositions}
+without being concerned about the subject matter described by those statements.
+The only restriction on these statements is that, in any given context, 
+they possess a {\it truth value} of either {\it true} or {\it false}.
 
-\subsection{\zcmd{propP}, \zcmd{propQ}, \zcmd{propR}, \zcmd{propS}, and \zcmd{propT}}
+\subsection{$Prop$}
 
-Traditionally, these statements are represented by the letters $\propP$, $\propQ$, $\propR$, $\propS$, and $\propT$.
+A proposition is also referred to as a {\it well-formed formula} or {\it wff} for short.
+This terminology stems from the traditional development of the propositional calculus in terms of
+a language of sentences over an alphabet with rules that prescribe when a given sentence is {\it well-formed}.
+However, here we will dispense with the language viewpoint, and its associated parsing issues, and move directly
+to the end result of parsing, namely the creation of {\it abstract syntax trees} or {\it ASTs} for short.
 
-\subsection{\zcmd{propPrime}}
+Z notation has a convenient mechanism for specifying the structure of ASTs, namely that of {\it free types}.
+Let $Prop$ denote the free type of all propositions of the propositional calculus.
+The free type definition of $Prop$ is as follows.
 
-If more statements need to be represented then the letters are decorated with one or more primes, 
-e.g. $\propP \propPrime$, $\propQ \propPrime \propPrime$, etc.
+\begin{syntax}
+	PropVar	& ::=	& \propP | \propQ | \propR | \propS | \propT \\
+			&  | 	& (\_ \propPrime) \ldata PropVar \rdata
+\also
+	Prop		& ::= & \trueProp | \falseProp \\
+			&  |	& \varProp \ldata PropVar \rdata \\
+			&  |	& \notProp \ldata Prop \rdata \\
+			&  |	& (\_ \andProp \_) \ldata Prop \cross Prop \rdata \\
+			&  |	& (\_ \orProp \_) \ldata Prop \cross Prop \rdata \\
+			&  |	& (\_ \impliesProp \_) \ldata Prop \cross Prop \rdata \\
+			&  |	& (\_ \equivProp \_) \ldata Prop \cross Prop \rdata
+\end{syntax}
+
+Note that the definition of $Prop$ depends on the definition of $PropVar$, the set of propositional variables.
+There are two {\it constant} propositions, namely $\trueProp$ and $\falseProp$.
+Any propositional variable defines a proposition.
+Propositions are built up recursively from the constants and variables using {\it logical connectives}.
+Here I use logical connective symbols defined by Z rather than those defined by Lemmon.
 
 \subsection{$PropVar$}
 
-Let $PropVar$ denote the set of propositional variables.
+The separation of the form of a statement from any given subject matter is accomplished by 
+the use of {\it propositional variables} that stand for arbitrary statements.
+Let $PropVar$ denote the free type of all propositional variables.
+
+\begin{remark}
+There are a countable infinity of propositional variables.
 
 \begin{zed}
-	PropVar ::= \propP | \propQ | \propR | \propS | \propT | (\_ \propPrime) \ldata PropVar \rdata
+	PropVar \bij \nat \neq \emptyset
 \end{zed}
 
+\end{remark}
+
+\subsection{\zcmd{propP}, \zcmd{propQ}, \zcmd{propR}, \zcmd{propS}, and \zcmd{propT}}
+
+Traditionally, arbitrary statements are represented by single letters such as
+$\propP$, $\propQ$, $\propR$, $\propS$, and $\propT$.
+
+\begin{remark}
+Each of $\propP$, $\propQ$, $\propR$, $\propS$, and $\propT$ is a propositional variable.
+
+\begin{zed}
+	\{ \propP, \propQ, \propR, \propS, \propT \} \subset PropVar
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{propPrime}}
+
+Typical propositions contain a small number of distinct statements, in which case the letters can be used.
+If more statements occur then the letters are decorated with one or more primes, 
+e.g. $\propP \propPrime$, $\propQ \propPrime \propPrime$, etc.
+
 \begin{example}
-$\propP \propPrime$, $\propQ \propPrime \propPrime$, and $\propR$ are propositional variables.
+$\propP \propPrime$ and $\propQ \propPrime \propPrime$ are propositional variables.
 
 \begin{zed}
 	\propP \propPrime \in PropVar
 \also
 	\propQ \propPrime \propPrime \in PropVar
-\also
-	\propR \in PropVar
 \end{zed}
 
 \end{example}
+
+\begin{remark}
+Appending a prime to a propositional variable is an injection from $PropVar$ to $PropVar$.
+
+\begin{zed}
+	(\_ \propPrime) \in PropVar \inj PropVar
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{trueProp} and \zcmd{falseProp}}
+
+Let $\trueProp$ denote the proposition that is true in all contexts and
+let $\falseProp$ denote the proposition that is false in all contexts.
+The propositional $\trueProp$ and $\falseProp$ are said to be {\it constant} because they do not
+depend on the context.
+
+\subsection{\zcmd{varProp}}
+
+Let $V$ be a propositional variable.
+Let $\varProp(V)$ denote the proposition defined by $V$.
+
+\begin{remark}
+The sets $PropVar$ and $Prop$ are different types.
+The expression $\propP$ is a propositional variable and the expression $\varProp(\propP)$ is a proposition.
+
+\begin{zed}
+	\propP \in PropVar
+\also
+	\varProp(\propP) \in Prop
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{notProp}}
+
+Let $A$ be a proposition.
+Let $\notProp A$ denote the {\it negation} of $A$.
+
+\begin{example}
+$\notProp(\varProp \propP)$ is a proposition.
+
+\begin{zed}
+	\notProp(\varProp \propP) \in Prop
+\end{zed}
+
+\end{example}
+
+\subsection{\zcmd{notPropV}}
+
+We can simplify the notation for negating a proposition defined by a propositional variable 
+by defining a function that directly negates the propositional variable and produces a proposition.
+
+\begin{axdef}
+	\notPropV: PropVar \inj Prop
+\where
+	\forall V: PropVar @ \\
+	\t1	\notPropV V = \notProp(\varProp V)
+\end{axdef}
+
+\subsection{\zcmd{andProp}}
+
+Let $A$ and $B$ be propositions.
+Let $A \andProp B$ denote the {\it conjunction} of $A$ and $B$.
+
+\subsection{\zcmd{andPropVP}, \zcmd{andPropPV}, and \zcmd{andPropVV}}
+
+We can simplify the notation for conjunctions involving propositions defined by propositional variables as follows.
+
+\begin{axdef}
+	\_ \andPropVP \_: PropVar \cross Prop \inj Prop \\
+	\_ \andPropPV \_: Prop \cross PropVar \inj Prop \\
+	\_ \andPropVV \_: PropVar \cross PropVar \inj Prop
+\where
+	\forall V: PropVar; A: Prop @ \\
+	\t1	V \andPropVP A = (\varProp V) \andProp A
+\also
+	\forall A: Prop; V: PropVar @ \\
+	\t1	A \andPropPV V = A \andProp (\varProp V)
+\also
+	\forall V, W: PropVar @ \\
+	\t1	V \andPropVV W = (\varProp V) \andProp (\varProp W)
+\end{axdef}
+
+\subsection{\zcmd{orProp}}
+
+Let $A$ and $B$ be propositions.
+Let $A \orProp B$ denote the {\it disjunction} of $A$ and $B$.
+
+\subsection{\zcmd{orPropVP}, \zcmd{orPropPV}, and \zcmd{orPropVV}}
+
+We can simplify the notation for disjunctions involving propositions defined by propositional variables as follows.
+
+\begin{axdef}
+	\_ \orPropVP \_: PropVar \cross Prop \inj Prop \\
+	\_ \orPropPV \_: Prop \cross PropVar \inj Prop \\
+	\_ \orPropVV \_: PropVar \cross PropVar \inj Prop
+\where
+	\forall V: PropVar; A: Prop @ \\
+	\t1	V \orPropVP A = (\varProp V) \orProp A
+\also
+	\forall A: Prop; V: PropVar @ \\
+	\t1	A \orPropPV V = A \orProp (\varProp V)
+\also
+	\forall V, W: PropVar @ \\
+	\t1	V \orPropVV W = (\varProp V) \orProp (\varProp W)
+\end{axdef}
+
+\subsection{\zcmd{impliesProp}}
+
+Let $A$ and $B$ be propositions.
+Let $A \impliesProp B$ denote the {\it implication} of $A$ and $B$.
+
+\subsection{\zcmd{impliesPropVP}, \zcmd{impliesPropPV}, and \zcmd{impliesPropVV}}
+
+We can simplify the notation for implications involving propositions defined by propositional variables as follows.
+
+\begin{axdef}
+	\_ \impliesPropVP \_: PropVar \cross Prop \inj Prop \\
+	\_ \impliesPropPV \_: Prop \cross PropVar \inj Prop \\
+	\_ \impliesPropVV \_: PropVar \cross PropVar \inj Prop
+\where
+	\forall V: PropVar; A: Prop @ \\
+	\t1	V \impliesPropVP A = (\varProp V) \impliesProp A
+\also
+	\forall A: Prop; V: PropVar @ \\
+	\t1	A \impliesPropPV V = A \impliesProp (\varProp V)
+\also
+	\forall V, W: PropVar @ \\
+	\t1	V \impliesPropVV W = (\varProp V) \impliesProp (\varProp W)
+\end{axdef}
+
+\subsection{\zcmd{equivProp}}
+
+Let $A$ and $B$ be propositions.
+Let $A \equivProp B$ denote the {\it equivalence} of $A$ and $B$.
+
+\subsection{\zcmd{equivPropVP}, \zcmd{equivPropPV}, and \zcmd{equivPropVV}}
+
+We can simplify the notation for equivalences involving propositions defined by propositional variables as follows.
+
+\begin{axdef}
+	\_ \equivPropVP \_: PropVar \cross Prop \inj Prop \\
+	\_ \equivPropPV \_: Prop \cross PropVar \inj Prop \\
+	\_ \equivPropVV \_: PropVar \cross PropVar \inj Prop
+\where
+	\forall V: PropVar; A: Prop @ \\
+	\t1	V \equivPropVP A = (\varProp V) \equivProp A
+\also
+	\forall A: Prop; V: PropVar @ \\
+	\t1	A \equivPropPV V = A \equivProp (\varProp V)
+\also
+	\forall V, W: PropVar @ \\
+	\t1	V \equivPropVV W = (\varProp V) \equivProp (\varProp W)
+\end{axdef}
 
 \printbibliography
 
