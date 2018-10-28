@@ -97,7 +97,8 @@ the use of {\it propositional variables} that stand for arbitrary statements.
 Let $PropVar$ denote the free type of all propositional variables.
 
 \begin{remark}
-There are a countable infinity of propositional variables.
+There are a countable infinity of propositional variables,
+e.g. $\propP, \propP\propPrime, \propP\propPrime\propPrime, \ldots$.
 
 \begin{zed}
 	PropVar \bij \nat \neq \emptyset
@@ -127,7 +128,6 @@ e.g. $\propP \propPrime$, $\propQ \propPrime \propPrime$, etc.
 
 \begin{example}
 $\propP \propPrime$ and $\propQ \propPrime \propPrime$ are propositional variables.
-
 \begin{zed}
 	\propP \propPrime \in PropVar
 \also
@@ -290,6 +290,299 @@ We can simplify the notation for equivalences involving propositions defined by 
 	\forall V, W: PropVar @ \\
 	\t1	V \equivPropVV W = (\varProp V) \equivProp (\varProp W)
 \end{axdef}
+
+\section{Proofs}
+
+Lemmon has a nice way of presenting proofs.
+Here's an example.
+
+\vspace{1ex}
+
+$\mathbf{1}\ P \implies Q, P \vdash Q$
+
+\vspace{1ex}
+
+\begin{tabular}{l l r l l}
+&	1	&	(1)	&	$P \implies Q$	&	A \\
+&	2	&	(2)	&	$P$			&	A \\
+&	1,2	&	(3)	&	$Q$			&	1,2 MPP
+\end{tabular}
+
+\vspace{1ex}
+
+A proof consists of a {\it sequent} to be proved and a finite sequence of {\it lines}.
+The lines are labelled by consecutive natural numbers, starting at $1$.
+Each line contains a proposition and the application of the {\it proof rule} used to add it to the proof. 
+A proof rule is either an {\it assumption} or a {\it derivation}.
+The {\it rule of assumption} allows the addition of any proposition.
+The {\it rules of derivation} allow the addition of a {\it conclusion} derived from {\it premises} that have been
+previously added.
+A premise is therefore either an assumption or the conclusion of a previous deduction.
+Every line of the proof can therefore be traced back to a finite, possibly empty, set of assumptions upon
+which it ultimately {\it depends}.
+
+\subsection{$ProofRule$}
+
+Let $ProofRule$ denote the set of proof rule applications.
+
+\begin{syntax}
+	ProofRule	& ::= & \ruleA \\
+			&  |	& \ruleMPP \ldata \nat_1 \cross \nat_1 \rdata
+\end{syntax}
+
+\begin{example}
+$\ruleA$ and $\ruleMPP(1,2)$are proof rules applications.
+
+\begin{zed}
+	\ruleA \in ProofRule
+\also
+	\ruleMPP(1,2) \in ProofRule
+\end{zed}
+
+\end{example}
+
+\subsection{$ProofLine$}
+
+A proof line consists of a finite, possibly empty, set of assumptions, a proposition,
+and the proof rule application used to derive the proposition.
+Let $ProofLine$ denote the set of all proof lines.
+
+\begin{schema}{ProofLine}
+	assumptions: \finset \nat_1 \\
+	prop: Prop \\
+	rule: ProofRule
+\end{schema}
+
+\subsection{$ProofLineTuple$}
+
+Let $ProofLineTuple$ denote the tuple formed by the components of a proof line.
+
+\begin{zed}
+	ProofLineTuple == \finset \nat_1 \cross Prop \cross ProofRule
+\end{zed}
+
+\begin{example}
+Line 3 of proof $\mathbf{1}$ corresponds to the following proof line.
+
+\begin{zed}
+	(\{ 1, 2 \}, \varProp(\propQ), \ruleMPP(1,2)) \in ProofLineTuple
+\end{zed}
+
+\end{example}
+
+\subsection{\zcmd{proofLineTuple}}
+
+Let $\proofLineTuple$ map a proof line to its tuple.
+
+\begin{zed}
+	\proofLineTuple == (\lambda ProofLine @ (assumptions, prop, rule))
+\end{zed}
+
+\begin{remark}
+The mapping from proof lines to tuples is a bijections.
+
+\begin{zed}
+	\proofLineTuple \in ProofLine \bij ProofLineTuple
+\end{zed}
+
+\end{remark}
+
+\subsection{$Argument$}
+
+An {\it argument} is a finite sequence of proof lines.
+Let $Argument$ denote the set of all arguments.
+
+\begin{zed}
+	Argument == \seq ProofLineTuple
+\end{zed}
+
+\subsection{$Proof_1$}
+
+Let $Proof_1$ denote the argument defined by proof $\mathbf{1}$.
+
+\begin{zed}
+	Proof_1 == \\
+	\t1	\{ 1 \mapsto (\{ 1\}, \propP \impliesPropVV \propQ, \ruleA), \\
+	\t1	2 \mapsto (\{ 2 \}, \varProp(\propP), \ruleA), \\
+	\t1	3 \mapsto (\{ 1, 2 \}, \varProp(\propQ), \ruleMPP(1,2)) \}
+\end{zed}
+
+\begin{example}
+$Proof_1$ is an argument.
+
+\begin{zed}
+	Proof_1 \in Argument
+\end{zed}
+
+\end{example}
+
+\subsection{$ArgumentLine$}
+
+A argument is said to be {\it sound} or {\it valid} if each proof line in the argument
+obeys the rules of derivation.
+When assessing the validity of a proof line, we need to specify its line number within
+the argument and examine its contents.
+Let $ArgumentLine$ denote the set of all arguments and line numbers within it.
+
+\begin{schema}{ArgumentLine}
+	argument: Argument \\
+	lineNumber: \nat_1
+\where
+	lineNumber \in \dom argument
+\end{schema}
+
+\begin{itemize}
+\item The line number corresponds to a proof line within the argument.
+\end{itemize}
+
+\begin{example}
+Line 3 in contained in proof $\mathbf{1}$.
+
+\begin{zed}
+	\LET argument == Proof_1; lineNumber == 3 @ \\
+	\t1	ArgumentLine
+\end{zed}
+
+\end{example}
+
+\subsection{$RuleOfAssumption$}
+
+A proof line that uses the rule of assumption $\ruleA$ in an argument is sound if it depends only on itself.
+Let $RuleOfAssumption$ denote the set of all argument lines that use the rule of assumption soundly.
+
+\begin{schema}{RuleOfAssumption}
+	ArgumentLine \\
+	P: Prop
+\where
+	argument(lineNumber) = (\{ lineNumber \}, P,  \ruleA)
+\end{schema}
+
+\begin{itemize}
+\item The line depends only on itself and the rule is the rule of assumptions $\ruleA$.
+\end{itemize}
+
+\subsection{$AssumptionArgumentLine$}
+
+Let $AssumptionArgumentLine$ denote the set of all argument lines that are sound applications
+of the rule of assumption.
+
+\begin{zed}
+	AssumptionArgumentLine \defs RuleOfAssumption \project ArgumentLine
+\end{zed}
+
+\begin{example}
+Lines 1 and 2 of $Proof_1$ are sound applications of the rule of assumption.
+
+\begin{zed}
+	\LET	argument == Proof_1 @ \\
+	\t1	\forall lineNumber : \{ 1, 2 \} @ \\
+	\t2		AssumptionArgumentLine
+\end{zed}
+
+\end{example}
+
+\subsection{$RuleOfMPP$}
+
+A proof line that uses the rule $\ruleMPP(i,j)$ in an argument is sound if $i$ and $j$ are lines
+that precede it, the proposition on line $i$ is an implication, the proposition on line $j$ is the antecedent
+of the implication, the proposition of the proof line is the consequent of the implication,
+and the proof line's assumptions is the union of the assumptions of lines $i$ and $j$.
+Let $RuleOfMPP$ denote the set of all argument lines that use the rule of MPP soundly.
+
+\begin{schema}{RuleOfMPP}
+	ArgumentLine \\
+	i, j: \nat_1 \\
+	ProofLine_1 \\
+	ProofLine_2 \\
+	P, Q: Prop
+\where
+	i < lineNumber \land j < lineNumber
+\also
+	argument(i) = (assumptions_1, P \impliesProp Q, rule_1)
+\also
+	argument(j) = (assumptions_2, P, rule_2)
+\also
+	argument(lineNumber) = (assumptions_1 \cup assumptions_2, Q, \ruleMPP(i,j))
+\end{schema}
+
+\subsection{$MPPArgumentLine$}
+
+Let $MPPArgumentLine$ denote the set of all argument lines that are sound applications
+of the rule of MPP.
+
+\begin{zed}
+	MPPArgumentLine \defs RuleOfMPP \project ArgumentLine
+\end{zed}
+
+\begin{example}
+Line 3 of $Proof_1$ is a sound application of the rule of MPP.
+
+\begin{zed}
+	\LET argument == Proof_1; \\
+	\t1	lineNumber == 3 @ \\
+	\t2		MPPArgumentLine
+\end{zed}
+
+\end{example}
+
+\subsection{$SoundArgumentLine$}
+
+An argument line is sound if it is a sound application of one of the rules of derivation.
+Let $SoundArgumentLine$ denote the set of all sound argument lines.
+
+\begin{zed}
+	SoundArgumentLine \defs \\
+	\t1	AssumptionArgumentLine \lor \\
+	\t1	MPPArgumentLine
+\end{zed}
+
+\subsection{$Proof$}
+
+A proof is an argument in which every line is sound.
+Let $Proof$ denote the set of proofs.
+
+\begin{zed}
+	Proof == \{~ argument: Argument | \\
+	\t1	\forall lineNumber: \dom argument @ \\
+	\t2		SoundArgumentLine ~\}
+\end{zed}
+
+\begin{example}
+$Proof_1$ is a proof.
+
+\begin{zed}
+	Proof_1 \in Proof
+\end{zed}
+
+\end{example}
+
+\section{The Curry-Howard Correspondence}
+
+The {\it Curry-Howard Correspondence} is an interpretation of propositions and proofs in terms of types.
+To each proposition there correspondences a type.
+The inhabitants of the type that corresponds to a proposition are proofs of that proposition.
+The logical connectives that build up propositions correspond to type constructors.
+
+To illustrate the correspondence, consider the implication logical connective $P \implies Q$.
+It corresponds to the type constructor $P \fun Q$.
+A proof $f$ of $P \implies Q$ corresponds to a function that maps any proof of $P$ to some proof of $Q$.
+
+Of course, $P \fun Q$ is not a type in Z. 
+It is a subset of the type $\power(P \cross Q)$.
+Nevertheless, we'll press on and pretend that it is a Z type for now.
+
+The rules of derivation correspond to the construction of a proof from assumptions.
+For example the rule of MPP corresponds to function application.
+Consider $Proof_1$.
+It corresponds to the following.
+
+\begin{schema}{CHProof1}[P,Q]
+	f: P \fun Q \\
+	x: P \\
+	y: Q
+\where
+	y = f(x)
+\end{schema}
 
 \printbibliography
 

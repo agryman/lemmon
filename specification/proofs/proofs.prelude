@@ -222,7 +222,7 @@
 %%tame \inv \limg\rimg \oplus \comp \circ
 % proofs
 
-\newcommand{\propVar}[1]{\mathit{#1}}
+\newcommand{\propVar}[1]{\mathrm{#1}}
 
 \newcommand{\propP}{\propVar{P}}
 \newcommand{\propQ}{\propVar{Q}}
@@ -269,4 +269,12 @@
 \newcommand{\equivPropPV}{\mathbin{\iff}}
 \newcommand{\equivPropVV}{\mathbin{\iff}}
 %%inop \equivProp \equivPropVP \equivPropPV \equivPropVV 2
+
+% proof rules
+\DeclareMathOperator{\ruleA}{A}
+\DeclareMathOperator{\ruleMPP}{MPP}
+
+\DeclareMathOperator{\proofLineTuple}{tuple}
+
+
 

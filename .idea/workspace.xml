@@ -18,12 +18,13 @@
     <session id="1357625757">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="4" />
+          <entry key="project.closed" value="6" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.8" value="2" />
-          <entry key="project.opened" value="5" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -46,7 +47,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="sh" value="24" />
-          <entry key="sty" value="538" />
+          <entry key="sty" value="619" />
           <entry key="tex" value="1987" />
         </counts>
       </usages-collector>
@@ -55,7 +56,7 @@
         <counts>
           <entry key="Bash" value="24" />
           <entry key="LaTeX source file" value="1987" />
-          <entry key="LaTeX style file" value="538" />
+          <entry key="LaTeX style file" value="619" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -80,8 +81,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/specification/proofs/proofs.sty">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="488">
-              <caret line="46" column="39" selection-start-line="46" selection-start-column="39" selection-end-line="46" selection-end-column="39" />
+            <state relative-caret-position="444">
+              <caret line="30" column="36" lean-forward="true" selection-start-line="30" selection-start-column="36" selection-end-line="30" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -143,8 +144,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="908" />
-    <option name="y" value="85" />
+    <option name="x" value="1436" />
+    <option name="y" value="42" />
     <option name="width" value="1168" />
     <option name="height" value="1087" />
   </component>
@@ -303,25 +304,25 @@
       <workItem from="1539776773413" duration="41000" />
       <workItem from="1539776844021" duration="3478000" />
       <workItem from="1539825181680" duration="5658000" />
-      <workItem from="1539986327550" duration="3776000" />
+      <workItem from="1539986327550" duration="4046000" />
+      <workItem from="1540664822389" duration="4630000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13705000" />
+    <option name="totallyTimeSpent" value="18605000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="908" y="85" width="1168" height="1087" extended-state="0" />
-    <editor active="true" />
+    <frame x="1436" y="42" width="1168" height="1087" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26731795" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27175844" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32921812" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32921812" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -373,8 +374,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/specification/proofs/proofs.sty">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="488">
-          <caret line="46" column="39" selection-start-line="46" selection-start-column="39" selection-end-line="46" selection-end-column="39" />
+        <state relative-caret-position="444">
+          <caret line="30" column="36" lean-forward="true" selection-start-line="30" selection-start-column="36" selection-end-line="30" selection-end-column="36" />
         </state>
       </provider>
     </entry>
