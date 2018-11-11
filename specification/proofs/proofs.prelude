@@ -234,47 +234,27 @@
 \newcommand{\propPrime}{{'}}
 %%postop \propPrime
 
-\newcommand{\trueProp}{true}
-\newcommand{\falseProp}{false}
-\DeclareMathOperator{\varProp}{var}
-
 % negation
 \newcommand{\notProp}{\lnot}
-\newcommand{\notPropV}{\lnot}
 
 % conjunction
 \newcommand{\andProp}{\mathbin{\land}}
-\newcommand{\andPropVP}{\mathbin{\land}}
-\newcommand{\andPropPV}{\mathbin{\land}}
-\newcommand{\andPropVV}{\mathbin{\land}}
-%%inop \andProp \andPropVP \andPropPV \andPropVV 4
+%%inop \andProp 4
 
 % disjunction
 \newcommand{\orProp}{\mathbin{\lor}}
-\newcommand{\orPropVP}{\mathbin{\lor}}
-\newcommand{\orPropPV}{\mathbin{\lor}}
-\newcommand{\orPropVV}{\mathbin{\lor}}
-%%inop \orProp \orPropVP \orPropPV \orPropVV 4
+%%inop \orProp 4
 
-% implication
+% conditional
 \newcommand{\impliesProp}{\mathbin{\implies}}
-\newcommand{\impliesPropVP}{\mathbin{\implies}}
-\newcommand{\impliesPropPV}{\mathbin{\implies}}
-\newcommand{\impliesPropVV}{\mathbin{\implies}}
-%%inop \impliesProp \impliesPropVP \impliesPropPV \impliesPropVV 3
+%%inop \impliesProp 3
 
-% equivalance
+% biconditional
 \newcommand{\equivProp}{\mathbin{\iff}}
-\newcommand{\equivPropVP}{\mathbin{\iff}}
-\newcommand{\equivPropPV}{\mathbin{\iff}}
-\newcommand{\equivPropVV}{\mathbin{\iff}}
-%%inop \equivProp \equivPropVP \equivPropPV \equivPropVV 2
+%%inop \equivProp 2
 
 % proof rules
 \DeclareMathOperator{\ruleA}{A}
 \DeclareMathOperator{\ruleMPP}{MPP}
 
 \DeclareMathOperator{\proofLineTuple}{tuple}
-
-
-

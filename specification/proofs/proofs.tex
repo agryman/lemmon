@@ -26,10 +26,16 @@ aimed at Z specifications
 For a long time I have thought that it would be extremely useful to be able to write formal proofs
 concerning the mathematical objects defined in Z specifications.
 There are some very mature proof assistants available.
-I know something about Coq, but unfortunately it's style of proof is very different that that one finds in mathematical
+I know something about Coq, but unfortunately it's style of proof is very different from that one finds in mathematical
 papers.
-A Coq proof consists of a list of tactics that represent higher level aggregates of deductions.
+
+A Coq proof consists of applications of so-called {\it tactics}.
+Each tactic represents a higher level aggregate of deductions.
 This makes sense for a proof assistant since its job is to help the user discover proofs.
+Tactics are like macros and as such they alleviate the user from much low-level tedium.
+However, the analog of a macro in normal mathematical writing is a lemma.
+Perhaps tactics are more useful for proving formal properties of programming languages where the mathematical
+objects of interest are complex, but finite, recursive structures.
 
 While a proof assistant might make sense is some contexts, proper development of a mathematical paper
 consists of a gradual introduction of concepts and lemmas leading to the main results.
@@ -41,6 +47,8 @@ I'd therefore really like something that would let me write and check natural lo
 In contrast to Coq, the style of proof presented by Lemmon is very clear and explicit.
 However, the task of checking such a proof could easily be delegated to a program,
 much the same way that \fuzz\ type checks Z.
+In fact Lemmon makes that point that, although there is no mechanical way to discover proofs,
+they can be mechanically checked.
 
 I believe that the kernel of a proof checker could be very small.
 It is basically an engine driven by a set of deduction rules.
@@ -50,81 +58,88 @@ at least a simple version should give me a greater appreciation of tools like Co
 use them more productively.
 
 My plan of attack is to formalize the concept of proof as described by Lemmon, starting with
-the propositional calculus.
+the propositional calculus, and then move on to predicate calculus.
 
-\section{Propositions}
+\section{The Propositional Calculus 1}
 
 The {\it propositional calculus} defines a set of formal {\it statements} or {\it propositions}
 without being concerned about the subject matter described by those statements.
 The only restriction on these statements is that, in any given context, 
 they possess a {\it truth value} of either {\it true} or {\it false}.
 
-\subsection{$Prop$}
-
 A proposition is also referred to as a {\it well-formed formula} or {\it wff} for short.
 This terminology stems from the traditional development of the propositional calculus in terms of
 a language of sentences over an alphabet with rules that prescribe when a given sentence is {\it well-formed}.
 However, here we will dispense with the language viewpoint, and its associated parsing issues, and move directly
 to the end result of parsing, namely the creation of {\it abstract syntax trees} or {\it ASTs} for short.
+This approach corresponds to Lemmon's Chapter 1.
+He returns to the issue of formal languages in Chapter 2.
+
+\subsection{$Prop$}
+
 
 Z notation has a convenient mechanism for specifying the structure of ASTs, namely that of {\it free types}.
-Let $Prop$ denote the free type of all propositions of the propositional calculus.
-The free type definition of $Prop$ is as follows.
+My first impulse was to use that mechanism to define propositions.
+However, the problem with free types is that they are {it closed} in the sense that all ways of constructing members of a free type
+must be specified when the free type is defined.
+Lemmon's book gradually introduces ways of constructing propositions, so in the interest of following his development of the subject
+as closely as possible, I won't define propositions that way.
 
-\begin{syntax}
-	PropVar	& ::=	& \propP | \propQ | \propR | \propS | \propT \\
-			&  | 	& (\_ \propPrime) \ldata PropVar \rdata
-\also
-	Prop		& ::= & \trueProp | \falseProp \\
-			&  |	& \varProp \ldata PropVar \rdata \\
-			&  |	& \notProp \ldata Prop \rdata \\
-			&  |	& (\_ \andProp \_) \ldata Prop \cross Prop \rdata \\
-			&  |	& (\_ \orProp \_) \ldata Prop \cross Prop \rdata \\
-			&  |	& (\_ \impliesProp \_) \ldata Prop \cross Prop \rdata \\
-			&  |	& (\_ \equivProp \_) \ldata Prop \cross Prop \rdata
-\end{syntax}
+On closer examination of free types in Z, it will be observed that they are merely syntactic sugar for introducing a new given set
+along with an exhaustive set of constructors for its elements.
+The constraint expressing the condition that the constructors are exhaustive is equivalent to saying that the domains of the constructors
+partition the set of propositions.
 
-Note that the definition of $Prop$ depends on the definition of $PropVar$, the set of propositional variables.
-There are two {\it constant} propositions, namely $\trueProp$ and $\falseProp$.
-Any propositional variable defines a proposition.
-Propositions are built up recursively from the constants and variables using {\it logical connectives}.
-Here I use logical connective symbols defined by Z rather than those defined by Lemmon.
+Therefore, given any subset of constructors, one can define the corresponding set of propositions that can be constructed from them.
+This allows new constructors to be gradually introduced.
+I'll take that approach.
+
+Let $Prop$ denote the set of all propositions.
+
+\begin{zed}
+	[Prop]
+\end{zed}
 
 \subsection{$PropVar$}
 
-The separation of the form of a statement from any given subject matter is accomplished by 
-the use of {\it propositional variables} that stand for arbitrary statements.
-Let $PropVar$ denote the free type of all propositional variables.
+The separation of the form of a statement from its content with respect to any given subject matter is accomplished by 
+the use of {\it propositional variables}. 
+A propositional variable stands for an arbitrary statement that is either true or false.
+Let $PropVar$ denote the set of propositional variables.
 
-\begin{remark}
-There are a countable infinity of propositional variables,
-e.g. $\propP, \propP\propPrime, \propP\propPrime\propPrime, \ldots$.
-
-\begin{zed}
-	PropVar \bij \nat \neq \emptyset
-\end{zed}
-
-\end{remark}
+\begin{axdef}
+	PropVar: \power Prop
+\end{axdef}
 
 \subsection{\zcmd{propP}, \zcmd{propQ}, \zcmd{propR}, \zcmd{propS}, and \zcmd{propT}}
 
 Traditionally, arbitrary statements are represented by single letters such as
-$\propP$, $\propQ$, $\propR$, $\propS$, and $\propT$.
+$\propP$, $\propQ$, $\propR$, $\propS$, and $\propT$ which represent distinct propositions.
 
-\begin{remark}
-Each of $\propP$, $\propQ$, $\propR$, $\propS$, and $\propT$ is a propositional variable.
+\begin{axdef}
+	\propP, \propQ, \propR, \propS, \propT: PropVar
+\where
+	\disjoint \langle \{\propP\}, \{\propQ\}, \{\propR\}, \{\propS\}, \{\propT\} \rangle
+\end{axdef}
+
+\subsection{$PropLetter$}
+
+Let $PropLetter$ denote the set of all proposition letters.
 
 \begin{zed}
-	\{ \propP, \propQ, \propR, \propS, \propT \} \subset PropVar
+	PropLetter == \{ \propP, \propQ, \propR, \propS, \propT \}
 \end{zed}
-
-\end{remark}
 
 \subsection{\zcmd{propPrime}}
 
 Typical propositions contain a small number of distinct statements, in which case the letters can be used.
 If more statements occur then the letters are decorated with one or more primes, 
 e.g. $\propP \propPrime$, $\propQ \propPrime \propPrime$, etc.
+Appending a prime to a propositional variable is an injection from $PropVar$ to $PropVar$.
+
+\begin{axdef}
+	\_ \propPrime: PropVar \inj PropVar
+\end{axdef}
 
 \begin{example}
 $\propP \propPrime$ and $\propQ \propPrime \propPrime$ are propositional variables.
@@ -136,160 +151,103 @@ $\propP \propPrime$ and $\propQ \propPrime \propPrime$ are propositional variabl
 
 \end{example}
 
-\begin{remark}
-Appending a prime to a propositional variable is an injection from $PropVar$ to $PropVar$.
+A propositional variable is either a letter or is primed.
 
 \begin{zed}
-	(\_ \propPrime) \in PropVar \inj PropVar
+	\langle PropLetter, \ran (\_ \propPrime) \rangle \partition PropVar
 \end{zed}
-
-\end{remark}
-
-\subsection{\zcmd{trueProp} and \zcmd{falseProp}}
-
-Let $\trueProp$ denote the proposition that is true in all contexts and
-let $\falseProp$ denote the proposition that is false in all contexts.
-The propositional $\trueProp$ and $\falseProp$ are said to be {\it constant} because they do not
-depend on the context.
-
-\subsection{\zcmd{varProp}}
-
-Let $V$ be a propositional variable.
-Let $\varProp(V)$ denote the proposition defined by $V$.
-
-\begin{remark}
-The sets $PropVar$ and $Prop$ are different types.
-The expression $\propP$ is a propositional variable and the expression $\varProp(\propP)$ is a proposition.
-
-\begin{zed}
-	\propP \in PropVar
-\also
-	\varProp(\propP) \in Prop
-\end{zed}
-
-\end{remark}
 
 \subsection{\zcmd{notProp}}
 
 Let $A$ be a proposition.
 Let $\notProp A$ denote the {\it negation} of $A$.
 
+\begin{axdef}
+	\notProp: Prop \inj Prop
+\end{axdef}
+
 \begin{example}
-$\notProp(\varProp \propP)$ is a proposition.
+$\notProp \propP$ is a negation.
 
 \begin{zed}
-	\notProp(\varProp \propP) \in Prop
+	\notProp \propP \in Prop
 \end{zed}
 
 \end{example}
 
-\subsection{\zcmd{notPropV}}
+\subsection{$Negation$}
 
-We can simplify the notation for negating a proposition defined by a propositional variable 
-by defining a function that directly negates the propositional variable and produces a proposition.
+Let $Negation$ denote that set of all negations.
 
-\begin{axdef}
-	\notPropV: PropVar \inj Prop
-\where
-	\forall V: PropVar @ \\
-	\t1	\notPropV V = \notProp(\varProp V)
-\end{axdef}
+\begin{zed}
+	Negation == \ran \notProp
+\end{zed}
 
 \subsection{\zcmd{andProp}}
 
 Let $A$ and $B$ be propositions.
 Let $A \andProp B$ denote the {\it conjunction} of $A$ and $B$.
 
-\subsection{\zcmd{andPropVP}, \zcmd{andPropPV}, and \zcmd{andPropVV}}
-
-We can simplify the notation for conjunctions involving propositions defined by propositional variables as follows.
-
 \begin{axdef}
-	\_ \andPropVP \_: PropVar \cross Prop \inj Prop \\
-	\_ \andPropPV \_: Prop \cross PropVar \inj Prop \\
-	\_ \andPropVV \_: PropVar \cross PropVar \inj Prop
-\where
-	\forall V: PropVar; A: Prop @ \\
-	\t1	V \andPropVP A = (\varProp V) \andProp A
-\also
-	\forall A: Prop; V: PropVar @ \\
-	\t1	A \andPropPV V = A \andProp (\varProp V)
-\also
-	\forall V, W: PropVar @ \\
-	\t1	V \andPropVV W = (\varProp V) \andProp (\varProp W)
+	\_ \andProp \_: Prop \cross Prop \inj Prop
 \end{axdef}
+
+\subsection{$Conjunction$}
+
+Let $Conjunction$ denote the set of all conjunctions.
+
+\begin{zed}
+	Conjunction == \ran (\_ \andProp \_)
+\end{zed}
 
 \subsection{\zcmd{orProp}}
 
 Let $A$ and $B$ be propositions.
 Let $A \orProp B$ denote the {\it disjunction} of $A$ and $B$.
 
-\subsection{\zcmd{orPropVP}, \zcmd{orPropPV}, and \zcmd{orPropVV}}
-
-We can simplify the notation for disjunctions involving propositions defined by propositional variables as follows.
-
 \begin{axdef}
-	\_ \orPropVP \_: PropVar \cross Prop \inj Prop \\
-	\_ \orPropPV \_: Prop \cross PropVar \inj Prop \\
-	\_ \orPropVV \_: PropVar \cross PropVar \inj Prop
-\where
-	\forall V: PropVar; A: Prop @ \\
-	\t1	V \orPropVP A = (\varProp V) \orProp A
-\also
-	\forall A: Prop; V: PropVar @ \\
-	\t1	A \orPropPV V = A \orProp (\varProp V)
-\also
-	\forall V, W: PropVar @ \\
-	\t1	V \orPropVV W = (\varProp V) \orProp (\varProp W)
+	\_ \orProp \_: Prop \cross Prop \inj Prop
 \end{axdef}
+
+\subsection{$Disjunction$}
+
+Let $Disjunction$ denote the set of all disjunctions.
+
+\begin{zed}
+	Disjunction == \ran (\_ \orProp \_)
+\end{zed}
 
 \subsection{\zcmd{impliesProp}}
 
 Let $A$ and $B$ be propositions.
-Let $A \impliesProp B$ denote the {\it implication} of $A$ and $B$.
-
-\subsection{\zcmd{impliesPropVP}, \zcmd{impliesPropPV}, and \zcmd{impliesPropVV}}
-
-We can simplify the notation for implications involving propositions defined by propositional variables as follows.
+Let $A \impliesProp B$ denote the {\it conditional} of $A$ and $B$.
 
 \begin{axdef}
-	\_ \impliesPropVP \_: PropVar \cross Prop \inj Prop \\
-	\_ \impliesPropPV \_: Prop \cross PropVar \inj Prop \\
-	\_ \impliesPropVV \_: PropVar \cross PropVar \inj Prop
-\where
-	\forall V: PropVar; A: Prop @ \\
-	\t1	V \impliesPropVP A = (\varProp V) \impliesProp A
-\also
-	\forall A: Prop; V: PropVar @ \\
-	\t1	A \impliesPropPV V = A \impliesProp (\varProp V)
-\also
-	\forall V, W: PropVar @ \\
-	\t1	V \impliesPropVV W = (\varProp V) \impliesProp (\varProp W)
+	\_ \impliesProp \_: Prop \cross Prop \inj Prop
 \end{axdef}
+
+\subsection{$Conditional$}
+
+Let $Conditional$ denote the set of all conditionals.
+
+\begin{zed}
+	Conditional == \ran (\_ \impliesProp \_)
+\end{zed}
 
 \subsection{\zcmd{equivProp}}
 
 Let $A$ and $B$ be propositions.
-Let $A \equivProp B$ denote the {\it equivalence} of $A$ and $B$.
-
-\subsection{\zcmd{equivPropVP}, \zcmd{equivPropPV}, and \zcmd{equivPropVV}}
-
-We can simplify the notation for equivalences involving propositions defined by propositional variables as follows.
+Let $A \equivProp B$ denote the {\it biconditional} of $A$ and $B$.
 
 \begin{axdef}
-	\_ \equivPropVP \_: PropVar \cross Prop \inj Prop \\
-	\_ \equivPropPV \_: Prop \cross PropVar \inj Prop \\
-	\_ \equivPropVV \_: PropVar \cross PropVar \inj Prop
-\where
-	\forall V: PropVar; A: Prop @ \\
-	\t1	V \equivPropVP A = (\varProp V) \equivProp A
-\also
-	\forall A: Prop; V: PropVar @ \\
-	\t1	A \equivPropPV V = A \equivProp (\varProp V)
-\also
-	\forall V, W: PropVar @ \\
-	\t1	V \equivPropVV W = (\varProp V) \equivProp (\varProp W)
+	\_ \equivProp \_: Prop \cross Prop \inj Prop
 \end{axdef}
+
+\subsection{$Biconditional$}
+
+\begin{zed}
+	Biconditional == \ran (\_ \equivProp \_)
+\end{zed}
 
 \section{Proofs}
 
@@ -310,7 +268,7 @@ $\mathbf{1}\ P \implies Q, P \vdash Q$
 
 \vspace{1ex}
 
-A proof consists of a {\it sequent} to be proved and a finite sequence of {\it lines}.
+A proof consists of a {\it sequent} to be proved and a finite sequence of one or more {\it lines}.
 The lines are labelled by consecutive natural numbers, starting at $1$.
 Each line contains a proposition and the application of the {\it proof rule} used to add it to the proof. 
 A proof rule is either an {\it assumption} or a {\it derivation}.
@@ -365,7 +323,7 @@ Let $ProofLineTuple$ denote the tuple formed by the components of a proof line.
 Line 3 of proof $\mathbf{1}$ corresponds to the following proof line.
 
 \begin{zed}
-	(\{ 1, 2 \}, \varProp(\propQ), \ruleMPP(1,2)) \in ProofLineTuple
+	(\{ 1, 2 \}, \propQ, \ruleMPP(1,2)) \in ProofLineTuple
 \end{zed}
 
 \end{example}
@@ -379,7 +337,7 @@ Let $\proofLineTuple$ map a proof line to its tuple.
 \end{zed}
 
 \begin{remark}
-The mapping from proof lines to tuples is a bijections.
+The mapping from proof lines to tuples is a bijection.
 
 \begin{zed}
 	\proofLineTuple \in ProofLine \bij ProofLineTuple
@@ -402,9 +360,9 @@ Let $Proof_1$ denote the argument defined by proof $\mathbf{1}$.
 
 \begin{zed}
 	Proof_1 == \\
-	\t1	\{ 1 \mapsto (\{ 1\}, \propP \impliesPropVV \propQ, \ruleA), \\
-	\t1	2 \mapsto (\{ 2 \}, \varProp(\propP), \ruleA), \\
-	\t1	3 \mapsto (\{ 1, 2 \}, \varProp(\propQ), \ruleMPP(1,2)) \}
+	\t1	\{ 1 \mapsto (\{ 1\}, \propP \impliesProp \propQ, \ruleA), \\
+	\t1	2 \mapsto (\{ 2 \}, \propP, \ruleA), \\
+	\t1	3 \mapsto (\{ 1, 2 \}, \propQ, \ruleMPP(1,2)) \}
 \end{zed}
 
 \begin{example}
@@ -552,6 +510,42 @@ $Proof_1$ is a proof.
 
 \begin{zed}
 	Proof_1 \in Proof
+\end{zed}
+
+\end{example}
+
+\subsection{$Proof_2$}
+
+Here is Lemmon's proof $\mathbf{2}$.
+
+\vspace{1ex}
+
+$\mathbf{2}\ \lnot Q \implies (\lnot P \implies Q), \lnot Q \vdash \lnot P \implies Q$
+
+\vspace{1ex}
+
+\begin{tabular}{l l r l l}
+&	1	&	(1)	&	$\lnot Q \implies (\lnot P \implies Q)$	&	A \\
+&	2	&	(2)	&	$\lnot Q$						&	A \\
+&	1,2	&	(3)	&	$ \lnot P \implies Q$				&	1,2 MPP
+\end{tabular}
+
+\vspace{1ex}
+
+Let $Proof_2$ denote this proof.
+
+\begin{zed}
+	Proof_2 == \\
+	\t1	\{ 1 \mapsto (\{ 1\}, \notProp \propQ \impliesProp (\notProp \propP \impliesProp \propQ), \ruleA), \\
+	\t1	2 \mapsto (\{ 2 \}, \notProp \propQ, \ruleA), \\
+	\t1	3 \mapsto (\{ 1, 2 \}, \notProp \propP \impliesProp \propQ, \ruleMPP(1,2)) \}
+\end{zed}
+
+\begin{example}
+$Proof_2$ is a proof.
+
+\begin{zed}
+	Proof_2 \in Proof
 \end{zed}
 
 \end{example}
