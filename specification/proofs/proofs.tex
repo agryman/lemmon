@@ -60,7 +60,7 @@ use them more productively.
 My plan of attack is to formalize the concept of proof as described by Lemmon, starting with
 the propositional calculus, and then move on to predicate calculus.
 
-\section{The Propositional Calculus 1}
+\section{Propositions}
 
 The {\it propositional calculus} defines a set of formal {\it statements} or {\it propositions}
 without being concerned about the subject matter described by those statements.
@@ -102,10 +102,10 @@ Let $Prop$ denote the set of all propositions.
 
 \subsection{$PropVar$}
 
-The separation of the form of a statement from its content with respect to any given subject matter is accomplished by 
+Separating of the form of a statement from its content with respect to any given subject matter is accomplished by 
 the use of {\it propositional variables}. 
 A propositional variable stands for an arbitrary statement that is either true or false.
-Let $PropVar$ denote the set of propositional variables.
+Let $PropVar$ denote the set of all propositional variables.
 
 \begin{axdef}
 	PropVar: \power Prop
@@ -134,7 +134,7 @@ Let $PropLetter$ denote the set of all proposition letters.
 
 Typical propositions contain a small number of distinct statements, in which case the letters can be used.
 If more statements occur then the letters are decorated with one or more primes, 
-e.g. $\propP \propPrime$, $\propQ \propPrime \propPrime$, etc.
+e.g. $\propP \propPrime$, $\propQ \propPrime \propPrime$.
 Appending a prime to a propositional variable is an injection from $PropVar$ to $PropVar$.
 
 \begin{axdef}
@@ -157,7 +157,7 @@ A propositional variable is either a letter or is primed.
 	\langle PropLetter, \ran (\_ \propPrime) \rangle \partition PropVar
 \end{zed}
 
-\subsection{\zcmd{notProp}}
+\subsection{\zcmd{notProp} and $Negation$}
 
 Let $A$ be a proposition.
 Let $\notProp A$ denote the {\it negation} of $A$.
@@ -175,24 +175,21 @@ $\notProp \propP$ is a negation.
 
 \end{example}
 
-\subsection{$Negation$}
-
-Let $Negation$ denote that set of all negations.
+Let $Negation$ denote the set of all negations.
 
 \begin{zed}
 	Negation == \ran \notProp
 \end{zed}
 
-\subsection{\zcmd{andProp}}
+\subsection{\zcmd{andProp} and $Conjunction$}
 
 Let $A$ and $B$ be propositions.
 Let $A \andProp B$ denote the {\it conjunction} of $A$ and $B$.
+The conjunction $A \andProp B$ is said to have $A$ and $B$ as its {\it conjuncts}.
 
 \begin{axdef}
 	\_ \andProp \_: Prop \cross Prop \inj Prop
 \end{axdef}
-
-\subsection{$Conjunction$}
 
 Let $Conjunction$ denote the set of all conjunctions.
 
@@ -200,16 +197,15 @@ Let $Conjunction$ denote the set of all conjunctions.
 	Conjunction == \ran (\_ \andProp \_)
 \end{zed}
 
-\subsection{\zcmd{orProp}}
+\subsection{\zcmd{orProp} and $Disjunction$}
 
 Let $A$ and $B$ be propositions.
 Let $A \orProp B$ denote the {\it disjunction} of $A$ and $B$.
+The disjunction $A \orProp B$ is said to have $A$ and $B$ as its {\it disjuncts}.
 
 \begin{axdef}
 	\_ \orProp \_: Prop \cross Prop \inj Prop
 \end{axdef}
-
-\subsection{$Disjunction$}
 
 Let $Disjunction$ denote the set of all disjunctions.
 
@@ -217,16 +213,15 @@ Let $Disjunction$ denote the set of all disjunctions.
 	Disjunction == \ran (\_ \orProp \_)
 \end{zed}
 
-\subsection{\zcmd{impliesProp}}
+\subsection{\zcmd{impliesProp} and $Conditional$}
 
 Let $A$ and $B$ be propositions.
 Let $A \impliesProp B$ denote the {\it conditional} of $A$ and $B$.
+The conditional $A \impliesProp B$ is said to have $A$ as its  {\it antecedent} and $B$ as its {\it consequent}.
 
 \begin{axdef}
 	\_ \impliesProp \_: Prop \cross Prop \inj Prop
 \end{axdef}
-
-\subsection{$Conditional$}
 
 Let $Conditional$ denote the set of all conditionals.
 
@@ -234,16 +229,19 @@ Let $Conditional$ denote the set of all conditionals.
 	Conditional == \ran (\_ \impliesProp \_)
 \end{zed}
 
-\subsection{\zcmd{equivProp}}
+\subsection{\zcmd{equivProp} and $Biconditional$}
 
 Let $A$ and $B$ be propositions.
 Let $A \equivProp B$ denote the {\it biconditional} of $A$ and $B$.
 
 \begin{axdef}
 	\_ \equivProp \_: Prop \cross Prop \inj Prop
+\where
+	\forall A, B: Prop @ \\
+	\t1	A \equivProp B = (A \impliesProp B) \andProp (B \impliesProp A)
 \end{axdef}
 
-\subsection{$Biconditional$}
+Let $Biconditional$ denote the set of all biconditionals.
 
 \begin{zed}
 	Biconditional == \ran (\_ \equivProp \_)
@@ -256,20 +254,27 @@ Here's an example.
 
 \vspace{1ex}
 
-$\mathbf{1}\ P \implies Q, P \vdash Q$
+$\mathbf{1}\ \propP \impliesProp \propQ, \propP \vdash \propQ$
 
 \vspace{1ex}
 
 \begin{tabular}{l l r l l}
-&	1	&	(1)	&	$P \implies Q$	&	A \\
-&	2	&	(2)	&	$P$			&	A \\
-&	1,2	&	(3)	&	$Q$			&	1,2 MPP
+&	1	&	(1)	&	$\propP \impliesProp \propQ$	&	$\ruleA$ \\
+&	2	&	(2)	&	$\propP$					&	$\ruleA$ \\
+&	1,2	&	(3)	&	$\propQ$					&	1,2 $\ruleMPP$
 \end{tabular}
 
 \vspace{1ex}
 
 A proof consists of a {\it sequent} to be proved and a finite sequence of one or more {\it lines}.
 The lines are labelled by consecutive natural numbers, starting at $1$.
+
+The sequent contains a, possible empty, sequence of assumptions followed by a conclusion.
+The sequence of lines that follow show how the conclusion is derived from the assumptions using
+various rules of derivation.
+
+Each line of the argument contains an inference.
+
 Each line contains a proposition and the application of the {\it proof rule} used to add it to the proof. 
 A proof rule is either an {\it assumption} or a {\it derivation}.
 The {\it rule of assumption} allows the addition of any proposition.
@@ -279,273 +284,351 @@ A premise is therefore either an assumption or the conclusion of a previous dedu
 Every line of the proof can therefore be traced back to a finite, possibly empty, set of assumptions upon
 which it ultimately {\it depends}.
 
-\subsection{$ProofRule$}
+\subsection{$Sequent$ and \zcmd{sequent}}
 
-Let $ProofRule$ denote the set of proof rule applications.
+A {\it sequent} consists of a sequence of assumptions and a conclusion.
+Let $Sequent$ denote the set of all sequents.
 
-\begin{syntax}
-	ProofRule	& ::= & \ruleA \\
-			&  |	& \ruleMPP \ldata \nat_1 \cross \nat_1 \rdata
-\end{syntax}
-
-\begin{example}
-$\ruleA$ and $\ruleMPP(1,2)$are proof rules applications.
-
-\begin{zed}
-	\ruleA \in ProofRule
-\also
-	\ruleMPP(1,2) \in ProofRule
-\end{zed}
-
-\end{example}
-
-\subsection{$ProofLine$}
-
-A proof line consists of a finite, possibly empty, set of assumptions, a proposition,
-and the proof rule application used to derive the proposition.
-Let $ProofLine$ denote the set of all proof lines.
-
-\begin{schema}{ProofLine}
-	assumptions: \finset \nat_1 \\
-	prop: Prop \\
-	rule: ProofRule
+\begin{schema}{Sequent}
+	assumptions: \seq Prop \\
+	conclusion: Prop
 \end{schema}
 
-\subsection{$ProofLineTuple$}
+Let $\sequent$ denote the binary operator that takes assumptions and a conclusion and forms a sequent.
 
-Let $ProofLineTuple$ denote the tuple formed by the components of a proof line.
+\begin{axdef}
+	\_ \sequent \_: \seq Prop \cross Prop \fun Sequent
+\where
+	\forall Sequent @ \\
+	\t1	assumptions \sequent conclusion = \theta Sequent
+\end{axdef}
+
+\subsection{$RuleOfDerivation$}
+
+Let $RuleOfDerivation$ denote the set of applications of rules of derviation.
+In the preceeding example, $\ruleA$ and $\ruleMPP$ are names of rules of derivation.
 
 \begin{zed}
-	ProofLineTuple == \finset \nat_1 \cross Prop \cross ProofRule
+	[RuleOfDerivation]
 \end{zed}
 
-\begin{example}
-Line 3 of proof $\mathbf{1}$ corresponds to the following proof line.
+\subsection{$Deduction$}
+
+A {\it deduction} consists of a proposition, an application of a rule of derivation that justifies the proposition,
+and a finite, possibly empty, set of assumptions on which the proposition depends.
+Let $Deduction$ denote the set of all deduction.
+
+\begin{schema}{Deduction}
+	assumptions: \finset \nat_1 \\
+	prop: Prop \\
+	rule: RuleOfDerivation
+\end{schema}
+
+\subsection{$DeductionTuple$}
+
+Let $DeductionTuple$ denote the tuple formed by the components of a deduction.
 
 \begin{zed}
-	(\{ 1, 2 \}, \propQ, \ruleMPP(1,2)) \in ProofLineTuple
+	DeductionTuple == \finset \nat_1 \cross Prop \cross RuleOfDerivation
 \end{zed}
 
-\end{example}
+\subsection{\zcmd{deductionTuple}}
 
-\subsection{\zcmd{proofLineTuple}}
-
-Let $\proofLineTuple$ map a proof line to its tuple.
+Let $\deductionTuple$ denote the function that maps a deduction to its tuple.
 
 \begin{zed}
-	\proofLineTuple == (\lambda ProofLine @ (assumptions, prop, rule))
+	\deductionTuple == (\lambda Deduction @ (assumptions, prop, rule))
 \end{zed}
 
 \begin{remark}
-The mapping from proof lines to tuples is a bijection.
+The mapping from deductions to tuples is a bijection.
 
 \begin{zed}
-	\proofLineTuple \in ProofLine \bij ProofLineTuple
+	\deductionTuple \in Deduction \bij DeductionTuple
 \end{zed}
 
 \end{remark}
 
+\subsection{\zcmd{deductionProp}}
+
+Let $\deductionProp$ denote the function that maps a deduction tuple to its $prop$ component.
+
+\begin{zed}
+	\deductionProp == \{~ Deduction @ (assumptions, prop, rule) \mapsto prop ~\}
+\end{zed}
+
 \subsection{$Argument$}
 
-An {\it argument} is a finite sequence of proof lines.
+An {\it argument} is a finite sequence of deductions.
 Let $Argument$ denote the set of all arguments.
 
 \begin{zed}
-	Argument == \seq ProofLineTuple
+	Argument == \seq DeductionTuple
 \end{zed}
 
-\subsection{$Proof_1$}
+\subsection{$ArgumentDeduction$}
 
-Let $Proof_1$ denote the argument defined by proof $\mathbf{1}$.
+When determining the soundness of an argument, we need to check of the soundness of each deduction.
+Each deduction within an argument is uniquely identified by its line number.
+Let $ArgumentDeduction$ denote the set of all arguments and valid line numbers in them.
 
-\begin{zed}
-	Proof_1 == \\
-	\t1	\{ 1 \mapsto (\{ 1\}, \propP \impliesProp \propQ, \ruleA), \\
-	\t1	2 \mapsto (\{ 2 \}, \propP, \ruleA), \\
-	\t1	3 \mapsto (\{ 1, 2 \}, \propQ, \ruleMPP(1,2)) \}
-\end{zed}
-
-\begin{example}
-$Proof_1$ is an argument.
-
-\begin{zed}
-	Proof_1 \in Argument
-\end{zed}
-
-\end{example}
-
-\subsection{$ArgumentLine$}
-
-A argument is said to be {\it sound} or {\it valid} if each proof line in the argument
-obeys the rules of derivation.
-When assessing the validity of a proof line, we need to specify its line number within
-the argument and examine its contents.
-Let $ArgumentLine$ denote the set of all arguments and line numbers within it.
-
-\begin{schema}{ArgumentLine}
+\begin{schema}{ArgumentDeduction}
 	argument: Argument \\
-	lineNumber: \nat_1
+	lineNumber: \nat_1 \\
+	Deduction
 \where
 	lineNumber \in \dom argument
+\also
+	argument(lineNumber) = (assumptions, prop, rule)
+\end{schema}
+\begin{itemize}
+	\item The deduction is identified by its line number within the argument.
+	\item The deduction has a tuple of components.
+\end{itemize}
+
+\subsection{$SoundDeduction$}
+
+A deduction within an argument is sound if it adheres to one of the rules of derivation.
+The rules of derivation will be described below.
+Let $SoundDeduction$ denote the set of all sound deductions.
+
+\begin{axdef}
+	SoundDeduction: \power ArgumentDeduction
+\end{axdef}
+
+\subsection{$SoundArgument$}
+
+An argument is sound precisely when all of its deductions are sound.
+Let $SoundArgument$ denote the set of all sound arguments.
+
+\begin{axdef}
+	SoundArgument: \power Argument
+\end{axdef}
+
+\subsection{\zcmd{deductionSequent}}
+
+Every deduction in an argument defines a sequent.
+Let $\deductionSequent$ denote the mapping from deductions to sequents.
+
+\begin{axdef}
+	\deductionSequent: ArgumentDeduction \fun Sequent
+\where
+	\forall ArgumentDeduction @ \\
+	\t1	\deductionSequent(\theta ArgumentDeduction) = \\
+	\t2		assumptions \extract (argument \comp \deductionProp) \sequent prop
+\end{axdef}
+
+\subsection{$ArgumentProvesSequent$}
+
+A sound argument proves a sequent if the final deduction of the argument defines the given sequent.
+Let $ArgumentProvesSequent$ denote this situation.
+
+\begin{schema}{ArgumentProvesSequent}
+	ArgumentDeduction \\
+	s: Sequent
+\where
+	argument \in SoundArgument
+\also
+	lineNumber = \# argument
+\also
+	s = \deductionSequent(\theta ArgumentDeduction)
+\end{schema}
+
+\subsection{$Proof$}
+
+A proof is a sequent and a sound argument whose last deduction proves the sequent.
+Let $Proof$ denote the set of proofs.
+
+\begin{axdef}
+	Proof: Sequent \rel SoundArgument
+\where
+	Proof = \{~ ArgumentDeduction | \\
+	\t1	(lineNumber = \# argument \land \\
+	\t1	argument \in SoundArgument) @ \\
+	\t2		\deductionSequent(\theta ArgumentDeduction) \mapsto argument ~\}
+\end{axdef}
+
+
+\subsection{\zcmd{ruleA}}
+
+Let $\ruleA$ denote the rule of assumption.
+The rule of assumption is used to introduce an arbitrary assumption at any point in the argument.
+
+\begin{axdef}
+	\ruleA: RuleOfDerivation
+\end{axdef}
+
+\subsection{$RuleOfAssumptionDetail$}
+
+A deduction uses the rule of assumption $\ruleA$ in an argument is sound if it introduces some arbitrary proposition $P$ and
+it depends only on itself.
+Let $RuleOfAssumptionDetail$ denote the set of all deductions, along with their details, that use the rule of assumption soundly.
+
+\begin{schema}{RuleOfAssumptionDetail}
+	ArgumentDeduction \\
+	P: Prop
+\where
+	assumptions = \{ lineNumber \}
+\also
+	prop = P
+\also
+	rule = \ruleA
 \end{schema}
 
 \begin{itemize}
-\item The line number corresponds to a proof line within the argument.
+	\item The deduction depends only on itself.
+	\item The deduction introduces an arbitrary proposition $P$.
+	\item The deduction is justified by the rule of assumption $\ruleA$.
 \end{itemize}
-
-\begin{example}
-Line 3 in contained in proof $\mathbf{1}$.
-
-\begin{zed}
-	\LET argument == Proof_1; lineNumber == 3 @ \\
-	\t1	ArgumentLine
-\end{zed}
-
-\end{example}
 
 \subsection{$RuleOfAssumption$}
 
-A proof line that uses the rule of assumption $\ruleA$ in an argument is sound if it depends only on itself.
-Let $RuleOfAssumption$ denote the set of all argument lines that use the rule of assumption soundly.
-
-\begin{schema}{RuleOfAssumption}
-	ArgumentLine \\
-	P: Prop
-\where
-	argument(lineNumber) = (\{ lineNumber \}, P,  \ruleA)
-\end{schema}
-
-\begin{itemize}
-\item The line depends only on itself and the rule is the rule of assumptions $\ruleA$.
-\end{itemize}
-
-\subsection{$AssumptionArgumentLine$}
-
-Let $AssumptionArgumentLine$ denote the set of all argument lines that are sound applications
-of the rule of assumption.
+Let $RuleOfAssumption$ denote the set of all deductions that use the rule of assumption with the detail hidden.
 
 \begin{zed}
-	AssumptionArgumentLine \defs RuleOfAssumption \project ArgumentLine
+	RuleOfAssumption \defs RuleOfAssumptionDetail \project ArgumentDeduction
 \end{zed}
 
-\begin{example}
-Lines 1 and 2 of $Proof_1$ are sound applications of the rule of assumption.
+The rule of assumption is sound.
 
 \begin{zed}
-	\LET	argument == Proof_1 @ \\
-	\t1	\forall lineNumber : \{ 1, 2 \} @ \\
-	\t2		AssumptionArgumentLine
+	RuleOfAssumption \subset SoundDeduction
 \end{zed}
 
-\end{example}
+\subsection{\zcmd{ruleMPP}}
 
-\subsection{$RuleOfMPP$}
+Let $\ruleMPP$ denote the MPP rule.
+The MPP rule is used to deduce the consequent of a conditional given its antecedent.
+The rule specifies the conditional and antecedent as its premises.
 
-A proof line that uses the rule $\ruleMPP(i,j)$ in an argument is sound if $i$ and $j$ are lines
+\begin{axdef}
+	\ruleMPP: \nat_1 \cross \nat_1 \fun RuleOfDerivation
+\end{axdef}
+
+\subsection{$RuleOfMPPDetail$}
+
+A deduction that uses the rule $\ruleMPP(i, j)$ in an argument is sound if $i$ and $j$ are lines
 that precede it, the proposition on line $i$ is an implication, the proposition on line $j$ is the antecedent
 of the implication, the proposition of the proof line is the consequent of the implication,
 and the proof line's assumptions is the union of the assumptions of lines $i$ and $j$.
-Let $RuleOfMPP$ denote the set of all argument lines that use the rule of MPP soundly.
+Let $RuleOfMPPDetail$ denote the set of all deductions, along with their detail, that use the rule of MPP soundly.
 
-\begin{schema}{RuleOfMPP}
-	ArgumentLine \\
+\begin{schema}{RuleOfMPPDetail}
+	ArgumentDeduction \\
 	i, j: \nat_1 \\
-	ProofLine_1 \\
-	ProofLine_2 \\
+	Deduction_1 \\
+	Deduction_2 \\
 	P, Q: Prop
 \where
+	rule =  \ruleMPP(i, j)
+\also
 	i < lineNumber \land j < lineNumber
 \also
 	argument(i) = (assumptions_1, P \impliesProp Q, rule_1)
 \also
 	argument(j) = (assumptions_2, P, rule_2)
 \also
-	argument(lineNumber) = (assumptions_1 \cup assumptions_2, Q, \ruleMPP(i,j))
+	assumptions = assumptions_1 \cup assumptions_2
+\also
+	prop = Q
 \end{schema}
 
-\subsection{$MPPArgumentLine$}
+\begin{itemize}
+	\item The rule of derivation is $\ruleMPP$ which specifies the premise line numbers $i$ of a conditional and $j$ of its antecedent.
+	\item The line numbers of the conditional and its antecedent must precede the deduction in the argument.
+	\item Line number $i$ contains a conditional of the form $P \impliesProp Q$.
+	\item Line number $j$ contains the antecedent $P$ of the conditional.
+	\item The deduction depends on the union of the assumptions that the premises depend on.
+	\item The deduction introduces the consequent $Q$ as the conclusion of the premises.
+\end{itemize}
 
-Let $MPPArgumentLine$ denote the set of all argument lines that are sound applications
-of the rule of MPP.
+\subsection{$RuleOfMPP$}
+
+Let $RuleOfMPP$ denote the set of all deductions that use the rule of MPP with the detail hidden.
 
 \begin{zed}
-	MPPArgumentLine \defs RuleOfMPP \project ArgumentLine
+	RuleOfMPP \defs RuleOfMPPDetail \project ArgumentDeduction
+\end{zed}
+
+The rule of MPP is sound.
+
+\begin{zed}
+	RuleOfMPP \subset SoundDeduction
+\end{zed}
+
+\subsection{$argument_1$}
+
+Let $argument_1$ denote the argument defined by proof $\mathbf{1}$.
+
+\begin{zed}
+	argument_1 == \\
+	\t1	\{ 1 \mapsto (\{ 1\}, \propP \impliesProp \propQ, \ruleA), \\
+	\t1	2 \mapsto (\{ 2 \}, \propP, \ruleA), \\
+	\t1	3 \mapsto (\{ 1, 2 \}, \propQ, \ruleMPP(1,2)) \}
 \end{zed}
 
 \begin{example}
-Line 3 of $Proof_1$ is a sound application of the rule of MPP.
+$argument_1$ is an argument.
 
 \begin{zed}
-	\LET argument == Proof_1; \\
-	\t1	lineNumber == 3 @ \\
-	\t2		MPPArgumentLine
+	argument_1 \in Argument
 \end{zed}
 
 \end{example}
 
-\subsection{$SoundArgumentLine$}
-
-An argument line is sound if it is a sound application of one of the rules of derivation.
-Let $SoundArgumentLine$ denote the set of all sound argument lines.
-
-\begin{zed}
-	SoundArgumentLine \defs \\
-	\t1	AssumptionArgumentLine \lor \\
-	\t1	MPPArgumentLine
-\end{zed}
-
-\subsection{$Proof$}
-
-A proof is an argument in which every line is sound.
-Let $Proof$ denote the set of proofs.
-
-\begin{zed}
-	Proof == \{~ argument: Argument | \\
-	\t1	\forall lineNumber: \dom argument @ \\
-	\t2		SoundArgumentLine ~\}
-\end{zed}
-
 \begin{example}
-$Proof_1$ is a proof.
+Line 3 of proof $\mathbf{1}$ corresponds to the following deduction tuple.
 
 \begin{zed}
-	Proof_1 \in Proof
+	(\{ 1, 2 \}, \propQ, \ruleMPP(1,2)) \in DeductionTuple
 \end{zed}
 
 \end{example}
 
-\subsection{$Proof_2$}
+\subsection{$proof_2$}
 
 Here is Lemmon's proof $\mathbf{2}$.
 
 \vspace{1ex}
 
-$\mathbf{2}\ \lnot Q \implies (\lnot P \implies Q), \lnot Q \vdash \lnot P \implies Q$
+$\mathbf{2}\ \notProp \propQ \impliesProp (\notProp \propP \impliesProp \propQ), \notProp \propQ \vdash \notProp \propP \impliesProp \propQ$
 
 \vspace{1ex}
 
 \begin{tabular}{l l r l l}
-&	1	&	(1)	&	$\lnot Q \implies (\lnot P \implies Q)$	&	A \\
-&	2	&	(2)	&	$\lnot Q$						&	A \\
-&	1,2	&	(3)	&	$ \lnot P \implies Q$				&	1,2 MPP
+&	1	&	(1)	&	$\notProp \propQ \impliesProp (\notProp \propP \impliesProp \propQ)$	&	$\ruleA$ \\
+&	2	&	(2)	&	$\notProp \propQ$											&	$\ruleA$ \\
+&	1,2	&	(3)	&	$ \notProp \propP \impliesProp \propQ$							&	1,2 $\ruleMPP$
 \end{tabular}
 
 \vspace{1ex}
 
-Let $Proof_2$ denote this proof.
+Let $sequent_2$ denote the sequent of this proof.
 
 \begin{zed}
-	Proof_2 == \\
+	sequent_2 == \langle \notProp \propQ \impliesProp (\notProp \propP \impliesProp \propQ),  \notProp \propQ \rangle \sequent \notProp \propP \impliesProp \propQ
+\end{zed}
+
+Let $argument_2$ denote the argument of this proof.
+
+\begin{zed}
+	argument_2 == \\
 	\t1	\{ 1 \mapsto (\{ 1\}, \notProp \propQ \impliesProp (\notProp \propP \impliesProp \propQ), \ruleA), \\
 	\t1	2 \mapsto (\{ 2 \}, \notProp \propQ, \ruleA), \\
 	\t1	3 \mapsto (\{ 1, 2 \}, \notProp \propP \impliesProp \propQ, \ruleMPP(1,2)) \}
 \end{zed}
 
-\begin{example}
-$Proof_2$ is a proof.
+Let $proof_2$ denote this proof.
 
 \begin{zed}
-	Proof_2 \in Proof
+	proof_2 ==  (sequent_2, argument_2)
+\end{zed}
+
+\begin{example}
+$proof_2$ is a proof.
+
+\begin{zed}
+	proof_2 \in Proof
 \end{zed}
 
 \end{example}

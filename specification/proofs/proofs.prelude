@@ -235,26 +235,32 @@
 %%postop \propPrime
 
 % negation
-\newcommand{\notProp}{\lnot}
+\newcommand{\notProp}{-}
 
 % conjunction
-\newcommand{\andProp}{\mathbin{\land}}
+\newcommand{\andProp}{\mathbin{\&}}
 %%inop \andProp 4
 
 % disjunction
-\newcommand{\orProp}{\mathbin{\lor}}
+\newcommand{\orProp}{\mathbin{\mathrm{v}}}
 %%inop \orProp 4
 
 % conditional
-\newcommand{\impliesProp}{\mathbin{\implies}}
+\newcommand{\impliesProp}{\mathbin{\fun}}
 %%inop \impliesProp 3
 
 % biconditional
-\newcommand{\equivProp}{\mathbin{\iff}}
+\newcommand{\equivProp}{\mathbin{\rel}}
 %%inop \equivProp 2
+
+% therefore
+\newcommand{\sequent}{\mathbin{\vdash}}
+%%inop \sequent 1
 
 % proof rules
 \DeclareMathOperator{\ruleA}{A}
 \DeclareMathOperator{\ruleMPP}{MPP}
 
-\DeclareMathOperator{\proofLineTuple}{tuple}
+\DeclareMathOperator{\deductionTuple}{tuple}
+\DeclareMathOperator{\deductionProp}{prop}
+\DeclareMathOperator{\deductionSequent}{sequent}
